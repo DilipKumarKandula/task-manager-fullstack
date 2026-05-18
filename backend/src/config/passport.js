@@ -17,7 +17,7 @@ passport.use(
           .GOOGLE_CLIENT_SECRET,
 
       callbackURL:
-        "/auth/google/callback",
+  process.env.GOOGLE_CALLBACK_URL
     },
 
     async (
