@@ -190,7 +190,7 @@ router.get(
     );
 
     res.redirect(
-      "process.env.FRONTEND_URL"
+      process.env.FRONTEND_URL
     );
   }
 );
