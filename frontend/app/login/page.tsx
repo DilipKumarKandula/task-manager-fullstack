@@ -2,8 +2,8 @@
 
 export default function LoginPage() {
   const handleGoogleLogin = () => {
-    window.location.href =
-      "http://localhost:5000/auth/google";
+  window.location.href =
+  `${process.env.NEXT_PUBLIC_API_URL}/auth/google`;
   };
 
   return (

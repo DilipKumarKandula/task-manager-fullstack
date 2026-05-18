@@ -190,7 +190,7 @@ router.get(
     );
 
     res.redirect(
-      "http://localhost:3000"
+      "process.env.FRONTEND_URL"
     );
   }
 );
