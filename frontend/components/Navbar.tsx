@@ -8,7 +8,7 @@ export default function Navbar() {
 
   const handleLogout = async () => {
     await fetch(
-      "http://localhost:5000/auth/logout",
+      `${process.env.NEXT_PUBLIC_API_URL}/auth/logout`,
       {
         method: "POST",
 
