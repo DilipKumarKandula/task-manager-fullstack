@@ -177,9 +177,8 @@ router.get(
       {
         httpOnly: true,
 
-        secure: false,
-
-        sameSite: "lax",
+   secure: true,
+sameSite: "none",
 
         maxAge:
           24 *
