@@ -38,7 +38,7 @@ router.get(
 
   //     session: false,
   //   }
-  ),
+  // ),
 
   (req, res) => {
     const token = jwt.sign(
