@@ -1,4 +1,5 @@
 const passport = require("passport");
+
 const db = require("../config/db");
 
 const GoogleStrategy = require(
@@ -26,40 +27,54 @@ passport.use(
       done
     ) => {
       try {
-      const googleId = profile.id;
+        const googleId =
+          profile.id;
 
-      const email =
-        profile.emails[0].value;
+        const email =
+          profile.emails[0].value;
 
-      const name =
-        profile.displayName;
+        const name =
+          profile.displayName;
 
-      const [rows] = await db.query(
-        "SELECT * FROM users WHERE google_id = ?",
-        [googleId]
-      );
+        const existingUser =
+          await db.query(
+            `
+            SELECT * FROM users
+            WHERE google_id = $1
+            `,
+            [googleId]
+          );
 
-      let user;
+        let user;
 
-      if (rows.length > 0) {
-        user = rows[0];
-      } else {
-        const [result] = await db.query(
-          `
-            INSERT INTO users
-            (google_id, email, name)
-            VALUES (?, ?, ?)
-          `,
-          [googleId, email, name]
-        );
+        if (
+          existingUser.rows.length > 0
+        ) {
+          user =
+            existingUser.rows[0];
+        } else {
+          const newUser =
+            await db.query(
+              `
+              INSERT INTO users
+              (
+                google_id,
+                email,
+                name
+              )
+              VALUES ($1, $2, $3)
+              RETURNING *
+              `,
+              [
+                googleId,
+                email,
+                name,
+              ]
+            );
 
-        user = {
-          id: result.insertId,
-          google_id: googleId,
-          email,
-          name,
-        };
-      }
+          user =
+            newUser.rows[0];
+        }
 
         done(null, user);
       } catch (error) {

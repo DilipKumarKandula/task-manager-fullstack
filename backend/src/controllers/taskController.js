@@ -194,11 +194,6 @@ const createTask = async (
   res
 ) => {
   try {
-    console.log(
-      "Authenticated User:",
-      req.user
-    );
-
     const {
       title,
       description,
@@ -207,38 +202,33 @@ const createTask = async (
     const userId =
       req.user.userId;
 
-    if (!userId) {
-      return res.status(401).json({
-        message:
-          "Unauthorized user",
-      });
-    }
-
-    const [result] = await db.query(
-      `
-      INSERT INTO tasks
-      (title, description, user_id)
-      VALUES (?, ?, ?)
-      `,
-      [
-        title,
-        description,
-        userId,
-      ]
-    );
+    const result =
+      await db.query(
+        `
+        INSERT INTO tasks
+        (
+          title,
+          description,
+          user_id
+        )
+        VALUES ($1, $2, $3)
+        RETURNING id
+        `,
+        [
+          title,
+          description,
+          userId,
+        ]
+      );
 
     res.status(201).json({
       message:
         "Task created successfully",
 
-      taskId: result.insertId,
+      taskId:
+        result.rows[0].id,
     });
   } catch (error) {
-    console.log(
-      "Create Task Error:",
-      error
-    );
-
     res.status(500).json({
       message:
         "Error creating task",
@@ -256,23 +246,20 @@ const getTasks = async (
     const userId =
       req.user.userId;
 
-    const [tasks] = await db.query(
-      `
-      SELECT * FROM tasks
-      WHERE user_id = ?
-      `,
-      [userId]
-    );
+    const result =
+      await db.query(
+        `
+        SELECT * FROM tasks
+        WHERE user_id = $1
+        ORDER BY id DESC
+        `,
+        [userId]
+      );
 
     res.status(200).json({
-      tasks,
+      tasks: result.rows,
     });
   } catch (error) {
-    console.log(
-      "Get Tasks Error:",
-      error
-    );
-
     res.status(500).json({
       message:
         "Failed to fetch tasks",
@@ -287,7 +274,8 @@ const updateTask = async (
   res
 ) => {
   try {
-    const { id } = req.params;
+    const { id } =
+      req.params;
 
     const {
       title,
@@ -298,27 +286,28 @@ const updateTask = async (
     const userId =
       req.user.userId;
 
-    const [result] = await db.query(
-      `
-      UPDATE tasks
-      SET
-        title = ?,
-        description = ?,
-        status = ?
-      WHERE id = ?
-      AND user_id = ?
-      `,
-      [
-        title,
-        description,
-        status,
-        id,
-        userId,
-      ]
-    );
+    const result =
+      await db.query(
+        `
+        UPDATE tasks
+        SET
+          title = $1,
+          description = $2,
+          status = $3
+        WHERE id = $4
+        AND user_id = $5
+        `,
+        [
+          title,
+          description,
+          status,
+          id,
+          userId,
+        ]
+      );
 
     if (
-      result.affectedRows === 0
+      result.rowCount === 0
     ) {
       return res.status(404).json({
         message:
@@ -331,11 +320,6 @@ const updateTask = async (
         "Task updated successfully",
     });
   } catch (error) {
-    console.log(
-      "Update Task Error:",
-      error
-    );
-
     res.status(500).json({
       message:
         "Failed to update task",
@@ -350,22 +334,24 @@ const deleteTask = async (
   res
 ) => {
   try {
-    const { id } = req.params;
+    const { id } =
+      req.params;
 
     const userId =
       req.user.userId;
 
-    const [result] = await db.query(
-      `
-      DELETE FROM tasks
-      WHERE id = ?
-      AND user_id = ?
-      `,
-      [id, userId]
-    );
+    const result =
+      await db.query(
+        `
+        DELETE FROM tasks
+        WHERE id = $1
+        AND user_id = $2
+        `,
+        [id, userId]
+      );
 
     if (
-      result.affectedRows === 0
+      result.rowCount === 0
     ) {
       return res.status(404).json({
         message:
@@ -378,11 +364,6 @@ const deleteTask = async (
         "Task deleted successfully",
     });
   } catch (error) {
-    console.log(
-      "Delete Task Error:",
-      error
-    );
-
     res.status(500).json({
       message:
         "Failed to delete task",
