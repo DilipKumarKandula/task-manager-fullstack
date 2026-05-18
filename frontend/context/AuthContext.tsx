@@ -43,14 +43,14 @@ export function AuthProvider({
     const fetchUser =
       async () => {
         try {
-          const response =
-            await fetch(
-              "http://localhost:5000/auth/me",
-              {
-                credentials:
-                  "include",
-              }
-            );
+const response =
+  await fetch(
+    `${process.env.NEXT_PUBLIC_API_URL}/auth/me`,
+    {
+      credentials:
+        "include",
+    }
+  );
 
           if (response.ok) {
             const data =
