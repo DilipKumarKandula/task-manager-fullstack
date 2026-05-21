@@ -58,10 +58,12 @@ export default function TaskCard({
         }
 
         onDelete(task.id);
+
       } catch (error) {
         setError(
           "Failed to delete task"
         );
+
       } finally {
         setLoading(false);
       }
@@ -116,40 +118,59 @@ export default function TaskCard({
           task.id,
           newStatus
         );
+
       } catch (error) {
         setError(
           "Failed to update task"
         );
+
       } finally {
         setLoading(false);
       }
     };
 
   return (
-    <div className="border p-4 rounded-lg break-words">
-      <h2 className="font-bold text-xl">
-        {task.title}
-      </h2>
+    <div className="bg-white rounded-xl shadow border p-5">
 
-      <p>{task.description}</p>
+      <div className="flex justify-between items-start mb-4">
 
-      <p className="mt-2">
-        Status: {task.status}
-      </p>
+        <div>
+          <h2 className="text-xl font-semibold">
+            {task.title}
+          </h2>
+
+          <p className="text-gray-600 mt-1">
+            {task.description}
+          </p>
+        </div>
+
+        <span
+          className={`px-3 py-1 rounded-full text-sm text-white ${
+            task.status ===
+            "completed"
+              ? "bg-green-500"
+              : "bg-yellow-500"
+          }`}
+        >
+          {task.status}
+        </span>
+
+      </div>
 
       {error && (
-        <p className="text-red-500 text-sm mt-2">
+        <p className="text-red-500 text-sm mb-4">
           {error}
         </p>
       )}
 
-      <div className="flex flex-col sm:flex-row gap-2 mt-4">
+      <div className="flex gap-3">
+
         <button
           onClick={
             handleStatusUpdate
           }
           disabled={loading}
-          className="bg-blue-500 text-white px-3 py-1 rounded disabled:opacity-50"
+          className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 disabled:opacity-50"
         >
           {loading
             ? "Updating..."
@@ -162,13 +183,15 @@ export default function TaskCard({
         <button
           onClick={handleDelete}
           disabled={loading}
-          className="bg-red-500 text-white px-3 py-1 rounded disabled:opacity-50"
+          className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 disabled:opacity-50"
         >
           {loading
             ? "Please wait..."
             : "Delete"}
         </button>
+
       </div>
+
     </div>
   );
 }

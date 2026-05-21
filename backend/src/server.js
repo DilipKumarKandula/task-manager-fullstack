@@ -14,14 +14,9 @@ const passport = require(
   "./config/passport"
 );
 
-const taskRoutes = require(
-  "./routes/taskRoutes"
-);
-
-const authRoutes = require(
-  "./routes/authRoutes"
-);
-
+const taskRoutes = require("./routes/taskRoutes");
+const authRoutes = require("./routes/authRoutes");
+const dashboardRoutes = require("./routes/dashboardRoutes");
 const app = express();
 
 app.use(
@@ -51,6 +46,7 @@ app.use(passport.session());
 app.use("/tasks", taskRoutes);
 
 app.use("/auth", authRoutes);
+app.use("/dashboard", dashboardRoutes);
 
 app.listen(5000, () => {
   console.log(
