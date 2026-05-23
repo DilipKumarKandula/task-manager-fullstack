@@ -19,6 +19,10 @@ type AuthContextType = {
   user: User | null;
 
   loading: boolean;
+
+  setUser: React.Dispatch<
+    React.SetStateAction<User | null>
+  >;
 };
 
 const AuthContext =
@@ -26,6 +30,8 @@ const AuthContext =
     user: null,
 
     loading: true,
+
+    setUser: () => {},
   });
 
 export function AuthProvider({
@@ -69,12 +75,13 @@ const response =
   }, []);
 
   return (
-    <AuthContext.Provider
-      value={{
-        user,
-        loading,
-      }}
-    >
+<AuthContext.Provider
+  value={{
+    user,
+    loading,
+    setUser,
+  }}
+>
       {children}
     </AuthContext.Provider>
   );

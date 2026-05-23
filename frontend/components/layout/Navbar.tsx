@@ -4,18 +4,32 @@ import Link from "next/link";
 import { useAuth } from "../../context/AuthContext";
 
 export default function Navbar() {
-  const { user, loading } = useAuth();
+  const {
+  user,
+  loading,
+  setUser,
+} = useAuth();
 
-  const handleLogout = async () => {
-    await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/auth/logout`,
-      {
-        method: "POST",
-        credentials: "include",
-      }
-    );
+const handleLogout =
+  async () => {
+    try {
 
-    window.location.reload();
+      await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/auth/logout`,
+        {
+          method: "POST",
+
+          credentials:
+            "include",
+        }
+      );
+
+      setUser(null);
+
+    } catch (error) {
+
+      console.log(error);
+    }
   };
 
   if (loading) {
